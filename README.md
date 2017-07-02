@@ -59,5 +59,14 @@ for instructions and the project rubric.
 
 ## Reflection
 1. Describe the effect each of the P, I, D components had in your implementation.  
+* P - The "Proportional" part makes the car steer in proportion to the cross track error (CTE). The proportional factor `Kp` is mulitplied by the CTE to calculate the steering angle. This results in the car overshooting the reference trajectory, then changing course and oscillating. Increasing `Kp` will make the the vehicle to oscillate faster. I settled on a proportional factor of 1.0 for the PID controller.
+
+* I - The "Integral" part corrects systemic bias such as steering drift. The integral factor `Ki` is multiplied by sum of all the previous CTE. The steering drift is not an issue in the simulation, so `Ki` was set to 0. I tried some non-zero values of `Ki`, and they would make the vehicle oscillate and even drive off the track. 
+
+* D - The "Differential" part makes the steering angle to decrease as it reaches the reference trajectory. This allows the car to approach the trajectory "gracefully" rather than osclillating wildly. It is calculated by multiplying the differential factor `Kd` by the derivative of CTE. This is equal to CTE at timestep t - CTE at timestep t-1 divided by delta t. The larger `Kd` will make the steering angle decrease faster as it reaches the reference trajectory. The `Kd` value I used was 20.
 
 2. Describe how the final hyperparameters were chosen.
+
+The parameters are chosen through manual tuning. 
+
+I started with the values that Sebastian used in the Udacity lessons. The car almost immediately drove off the track. I then set Ki equal to zero and adjusted Kp and Kd by small amounts. I started by decreasing just Kp, then increasing it by about 0.5 each time. This did little to improve the error. Then I adjusted Kd by the same amount, with no improvement. Next I started increasing Kd by factors of 10 until I got a result that did not drive off of the track (Kd = 10). I then went back to tuning Kp, settling on 1.0. Finally, I tuned Kd by smaller amounts until I settled at 20.
