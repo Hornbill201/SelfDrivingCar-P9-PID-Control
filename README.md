@@ -63,10 +63,13 @@ for instructions and the project rubric.
 
 * I - The "Integral" part corrects systemic bias such as steering drift. The integral factor `Ki` is multiplied by sum of all the previous CTE. The steering drift is not an issue in the simulation, so `Ki` was set to 0. I tried some non-zero values of `Ki`, and they would make the vehicle oscillate and even drive off the track. 
 
-* D - The "Differential" part makes the steering angle to decrease as it reaches the reference trajectory. This allows the car to approach the trajectory "gracefully" rather than osclillating wildly. It is calculated by multiplying the differential factor `Kd` by the derivative of CTE. This is equal to CTE at timestep t - CTE at timestep t-1 divided by delta t. The larger `Kd` will make the steering angle decrease faster as it reaches the reference trajectory. The `Kd` value I used was 20.
+* D - The "Differential" part makes the steering angle to decrease as it reaches the reference trajectory. This allows the car to approach the trajectory "gracefully" rather than osclillating wildly. It is calculated by multiplying the differential factor `Kd` by the derivative of CTE. This is equal to CTE at timestep `t` - CTE at timestep `t-1` divided by `delta t`. The larger `Kd` will make the steering angle decrease faster as it reaches the reference trajectory. The `Kd` value I used was 20.
 
 2. Describe how the final hyperparameters were chosen.
 
-The parameters are chosen through manual tuning. 
+The parameters are chosen through manual tuning. I first tried a set of small value parameters which were introduced in the Udacity lesson. However, the car drove off the track. I realized that the steering drifting is not a issue in the simulator. Therefore, I set `Ki` to be 0. And then I started to increase `Kp` and `Kd`. At first I increase them with small rate, `0.1` increament in each step. But it does not helps much. Then I tried to increase the `Kd` with larger rate, `5` increament in each step. After `Kd` increases to larger than `10` the car tends to drive on the track. After that I started to tuning the parameter `Kp`.   
 
-I started with the values that Sebastian used in the Udacity lessons. The car almost immediately drove off the track. I then set Ki equal to zero and adjusted Kp and Kd by small amounts. I started by decreasing just Kp, then increasing it by about 0.5 each time. This did little to improve the error. Then I adjusted Kd by the same amount, with no improvement. Next I started increasing Kd by factors of 10 until I got a result that did not drive off of the track (Kd = 10). I then went back to tuning Kp, settling on 1.0. Finally, I tuned Kd by smaller amounts until I settled at 20.
+The final parameters I am using are
+```
+Kp = 1.0, Ki = 0, Kd = 20.0. 
+```
