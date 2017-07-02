@@ -6,6 +6,7 @@
 
 // for convenience
 using json = nlohmann::json;
+using namespace std;
 
 // For converting back and forth between radians and degrees.
 constexpr double pi() { return M_PI; }
@@ -28,12 +29,29 @@ std::string hasData(std::string s) {
   return "";
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+
+  if (argc < 4){
+    cerr << argv[0] << " Input error!!! Please use: \n";
+    cerr << "\t " << argv[0] << " INITIAL_P INITIAL_I INITIAL_D \n";
+    cerr << "\t For example: " << argv[0] << " 1 0 20" << endl;
+    exit(1);
+  }
+
+
+
   uWS::Hub h;
 
   PID pid;
   // TODO: Initialize the pid variable.
+
+  double init_Kp = atof(argv[1]);
+  double init_Ki = atof(argv[2]);
+  double init_Kd = atof(argv[3]);
+ 
+  pid.Init(init_Kp, init_Ki, init_Kd);
+
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -57,6 +75,12 @@ int main()
           * NOTE: Feel free to play around with the throttle and speed. Maybe use
           * another PID controller to control the speed!
           */
+
+          //----------------------
+          pid.UpdateError(cte);
+          steer_value = pid.TotalError();  
+          //----------------------
+
           
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
